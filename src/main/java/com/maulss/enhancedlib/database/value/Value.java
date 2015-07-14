@@ -45,8 +45,8 @@ public final class Value {
 		return type.equals(ValueType.SET)
 				? x
 				: type.equals(ValueType.GIVE)
-						? Integer.valueOf(value.toString()) + x
-						: Integer.valueOf(value.toString()) - x;
+						? x + Integer.valueOf(value.toString())
+						: x - Integer.valueOf(value.toString());
 	}
 
 	@Override
