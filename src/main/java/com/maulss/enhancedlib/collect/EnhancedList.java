@@ -9,16 +9,17 @@ package com.maulss.enhancedlib.collect;
 import com.google.common.collect.ImmutableList;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.Validate;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONAware;
+import org.json.simple.JSONValue;
 
 import java.util.*;
 
-public class EnhancedList<E> extends ArrayList<E> {
+public class EnhancedList<E> extends ArrayList<E> implements JSONAware {
 
 	private static final long serialVersionUID = 3550244475910399738L;
 
-	public EnhancedList() {
-		super();
-	}
+	public EnhancedList() {}
 
 	public EnhancedList(int initialCapacity) {
 		super(initialCapacity);
@@ -31,6 +32,10 @@ public class EnhancedList<E> extends ArrayList<E> {
 
 	public EnhancedList(Collection<? extends E> c) {
 		super(c);
+	}
+
+	public EnhancedList(String jsonString) {
+		this((JSONArray) JSONValue.parse(jsonString));
 	}
 
 	public final boolean addIf(boolean check, E element) {
@@ -88,6 +93,16 @@ public class EnhancedList<E> extends ArrayList<E> {
 		}
 
 		return builder.toString();
+	}
+
+	@Override
+	public String toJSONString() {
+		return JSONArray.toJSONString(this);
+	}
+
+	@Override
+	public String toString() {
+		return toJSONString();
 	}
 
 	public boolean equals(List<?> other) {

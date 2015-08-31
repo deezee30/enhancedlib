@@ -12,20 +12,36 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.Validate;
+import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.util.*;
 
-public class EnhancedMap<K, V> extends LinkedHashMap<K, V> {
+public class EnhancedMap<K, V> extends LinkedHashMap<K, V> implements JSONAware {
 
 	private static final long serialVersionUID = -2780608617302194763L;
 
-	public EnhancedMap() {
-		super();
+	public EnhancedMap() {}
+
+	public EnhancedMap(int initialCapacity, float loadFactor) {
+		super(initialCapacity, loadFactor);
 	}
 
 	public EnhancedMap(int initialCapacity) {
 		super(initialCapacity);
+	}
+
+	public EnhancedMap(Map<? extends K, ? extends V> m) {
+		super(m);
+	}
+
+	public EnhancedMap(int initialCapacity, float loadFactor, boolean accessOrder) {
+		super(initialCapacity, loadFactor, accessOrder);
+	}
+
+	public EnhancedMap(String jsonString) {
+		this((JSONObject) JSONValue.parse(jsonString));
 	}
 
 	public final boolean putIf(boolean check, K key, V value) {
@@ -95,7 +111,8 @@ public class EnhancedMap<K, V> extends LinkedHashMap<K, V> {
 		throw null;
 	}
 
-	public final String toJson() {
+	@Override
+	public final String toJSONString() {
 		return JSONObject.toJSONString(this);
 	}
 
@@ -112,8 +129,7 @@ public class EnhancedMap<K, V> extends LinkedHashMap<K, V> {
 
 	@Override
 	public String toString() {
-		// return ArrayUtil.mapToString(this);
-		return toJson();
+		return toJSONString();
 	}
 
 	public static <M extends Map<K, V>,
