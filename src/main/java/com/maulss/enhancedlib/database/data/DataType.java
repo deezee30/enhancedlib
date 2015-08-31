@@ -41,6 +41,7 @@ public enum DataType {
 
 	// =: Misc
 	// Type     | Column Name     | Attr 1 | Attr 2 |
+	BOOLEAN		("BOOLEAN"),
 	CUSTOM		("?", 				0),
 	CUSTOM_1	("?(?)", 			0),
 	CUSTOM_2	("?(?,?)", 			0, 			0);
