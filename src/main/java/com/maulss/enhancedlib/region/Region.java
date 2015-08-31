@@ -47,12 +47,6 @@ public abstract class Region implements Cloneable, Serializable, Iterable<Vector
 
 	private static final long serialVersionUID = 3272199880401532227L;
 
-	// Loop through every point and add it to list
-	private final EnhancedList<Vector> points = new EnhancedList<Vector>(getVolume()) {
-		private static final long serialVersionUID = 809792792985432009L;
-		{ loop(points :: add); }
-	};
-
 	private final transient int minX = Math.min(
 			getMinBounds().getFloorX(),
 			getMaxBounds().getFloorX()
@@ -67,6 +61,12 @@ public abstract class Region implements Cloneable, Serializable, Iterable<Vector
 			getMinBounds().getFloorZ(),
 			getMaxBounds().getFloorZ()
 	);
+
+	// Loop through every point and add it to list
+	@SuppressWarnings("serial")
+	private final EnhancedList<Vector> points = new EnhancedList<Vector>(getVolume()) {
+		{ loop(points::add); }
+	};
 
 	/**
 	 * @return The volume of the region in {@code int} units squared form.
