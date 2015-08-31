@@ -267,7 +267,7 @@ public final class MySQLTable extends Table {
 		Validate.notNull(identity, "The identity must not be null in order to obtain its data");
 
 		return Database.sendQuery(String.format(
-				"SELECT * FROM `%s` WHERE `%s` = ? LIMIT 1;",
+				"SELECT * FROM `%s` WHERE `%s` = ?;",
 				this,
 				identity.getIdentifierColumn().getColumn()
 		), identity.getIdentifier());
