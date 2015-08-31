@@ -35,7 +35,7 @@ import java.util.concurrent.*;
 public class MySQL extends Database {
 
 	private final MySQLProperties properties;
-	private final Timer timer = new Timer();
+	private volatile Timer timer = new Timer();
 	private ListeningExecutorService executor;
 	private Connection connection;
 
@@ -121,10 +121,10 @@ public class MySQL extends Database {
 	protected final CachedRowSet query(@NotNull String query) throws DatabaseException {
 		checkExecution(query);
 
-		// Record heavy tasks with a timer as usual
-		timer.start();
-
 		Future<CachedRowSet> future = executor.submit(() -> {
+
+			// Record heavy tasks with a timer as usual
+			timer.start();
 
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(query);
@@ -132,6 +132,11 @@ public class MySQL extends Database {
 			// later on after it was closed.
 			CachedRowSet row = new CachedRowSetImpl();
 			row.populate(result);
+
+			Messaging.debug(
+					"Ordinary query completed and returned in %sms",
+					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
+			);
 
 			return row;
 		});
@@ -146,11 +151,6 @@ public class MySQL extends Database {
 					"An error occurred while attempting to query the database: \"" + query + "\"", e);
 		}
 
-		Messaging.debug(
-				"Ordinary query completed and returned in %sms",
-				timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-		);
-
 		return row;
 	}
 
@@ -160,10 +160,10 @@ public class MySQL extends Database {
 									   @NotNull Object... values) throws DatabaseException {
 		checkExecution(query, values);
 
-		// Record heavy tasks with a timer as usual
-		timer.start();
-
 		Future<CachedRowSet> future = executor.submit(() -> {
+
+			// Record heavy tasks with a timer as usual
+			timer.start();
 
 			PreparedStatement statement = connection.prepareStatement(query);
 			set(statement, values);
@@ -175,6 +175,11 @@ public class MySQL extends Database {
 
 			result.close();
 			statement.close();
+
+			Messaging.debug(
+					"Advanced query completed and returned in %sms",
+					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
+			);
 
 			return row;
 		});
@@ -189,11 +194,6 @@ public class MySQL extends Database {
 					+ query + "\" -- with values: " + Arrays.toString(values), e);
 		}
 
-		Messaging.debug(
-				"Advanced query completed and returned in %sms",
-				timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-		);
-
 		return row;
 	}
 
@@ -202,10 +202,10 @@ public class MySQL extends Database {
 	protected final CachedRowSet update(@NotNull String update) throws DatabaseException {
 		checkExecution(update);
 
-		// Record heavy tasks with a timer as usual
-		timer.start();
-
 		Future<CachedRowSet> future = executor.submit(() -> {
+
+			// Record heavy tasks with a timer as usual
+			timer.start();
 
 			// Using CachedRowSet so that we can manipulate the ResultSet
 			// later on after it was closed.
@@ -225,6 +225,11 @@ public class MySQL extends Database {
 				}
 			}
 
+			Messaging.debug(
+					"Ordinary update completed in %sms",
+					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
+			);
+
 			return row;
 		});
 
@@ -239,11 +244,6 @@ public class MySQL extends Database {
 					+ update + "\"", e);
 		}
 
-		Messaging.debug(
-				"Ordinary update completed in %sms",
-				timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-		);
-
 		return row;
 	}
 
@@ -253,10 +253,10 @@ public class MySQL extends Database {
 										@NotNull Object... values) throws DatabaseException {
 		checkExecution(update, values);
 
-		// Record heavy tasks with a timer as usual
-		timer.start();
-
 		Future<CachedRowSet> future = executor.submit(() -> {
+
+			// Record heavy tasks with a timer as usual
+			timer.start();
 
 			// Using CachedRowSet so that we can manipulate the ResultSet
 			// later on after it was closed.
@@ -278,6 +278,11 @@ public class MySQL extends Database {
 				}
 			}
 
+			Messaging.debug(
+					"Advanced update completed in %sms",
+					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
+			);
+
 			return row;
 		});
 
@@ -291,11 +296,6 @@ public class MySQL extends Database {
 					"An error occurred while attempting to retrieve generated keys while updating the database: \""
 							+ update + "\"", e);
 		}
-
-		Messaging.debug(
-				"Advanced update completed in %sms",
-				timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-		);
 
 		return row;
 	}
