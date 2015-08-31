@@ -72,7 +72,7 @@ public interface Identity extends Serializable {
 		return getTable().get(this, column);
 	}
 
-	default Object getFromRow(@NotNull StatType... columns) {
+	default Object[] getFromRow(@NotNull StatType... columns) {
 		return getTable().get(this, columns);
 	}
 
