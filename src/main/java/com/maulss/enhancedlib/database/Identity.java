@@ -48,6 +48,15 @@ public interface Identity extends Serializable {
 		getTable().delete(this);
 	}
 
+	default CachedRowSet insertRowToColumns(@NotNull StatType[] columns,
+											@NotNull Object... values) {
+		return getTable().insertToColumns(columns, values);
+	}
+
+	default CachedRowSet insertRow(@NotNull Object... values) {
+		return getTable().insert(values);
+	}
+
 	default CachedRowSet updateRow(@NotNull StatType column,
 								   @NotNull Value value) {
 		return getTable().update(this, column, value);
