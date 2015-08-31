@@ -6,7 +6,11 @@
 
 package com.maulss.enhancedlib.text;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.Validate;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class StringUtil {
 
@@ -56,5 +60,13 @@ public final class StringUtil {
 
 	public static String checkPlural(String singular, String plural, int count) {
 		return count == 1 ? singular : plural;
+	}
+
+	public static ImmutableList<String> splitMaintainBounds(String longString, int maxLength) {
+		final Matcher m = Pattern.compile("\\G\\s*(.{1," + maxLength + "})(?=\\s|$)", Pattern.DOTALL).matcher(longString);
+		final ImmutableList.Builder<String> strings = new ImmutableList.Builder<>();
+		while (m.find()) strings.add(m.group(1));
+
+		return strings.build();
 	}
 }
