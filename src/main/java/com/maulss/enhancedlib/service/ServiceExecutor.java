@@ -8,10 +8,12 @@ package com.maulss.enhancedlib.service;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.maulss.enhancedlib.net.http.Form;
 import com.sun.istack.internal.NotNull;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public final class ServiceExecutor {
 
@@ -32,5 +34,13 @@ public final class ServiceExecutor {
 
 	public static ListeningExecutorService newAsyncExecutor() {
 		return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+	}
+
+	public static ListeningExecutorService newAsyncExecutor(ThreadFactory tf) {
+		return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool(tf));
+	}
+
+	public static ListeningExecutorService newAsyncExecutor(String name) {
+		return newAsyncExecutor(new ThreadFactoryBuilder().setNameFormat(name + "-%d").build());
 	}
 }

@@ -72,7 +72,7 @@ public class MySQL extends Database {
 			// will reuse previously constructed threads when they are available.
 			// This thread pool will drastically increase performance for these
 			// small asynchronous tasks as they will be reused.
-			executor = ServiceExecutor.newAsyncExecutor();
+			executor = ServiceExecutor.newAsyncExecutor("MySQL Pool");
 
 			Messaging.debug("Using MySQL URL: '" + url() + "'");
 		} catch (SQLException | ClassNotFoundException e) {
@@ -217,12 +217,8 @@ public class MySQL extends Database {
 
 				row.populate(statement.getGeneratedKeys());
 			} catch (SQLException e) {
-				try {
-					throw new DatabaseException(
-							"An error occurred while attempting to update the database: \"" + update + "\"", e);
-				} catch (DatabaseException e1) {
-					e1.printStackTrace();
-				}
+				Messaging.debug("An error occurred while attempting to update the database: \"%s\" -- %s",
+						update, e);
 			}
 
 			Messaging.debug(
@@ -233,15 +229,15 @@ public class MySQL extends Database {
 			return row;
 		});
 
-		CachedRowSet row;
+		CachedRowSet row = null;
 
 		try {
 			row = future.get();
 		} catch (InterruptedException | ExecutionException e) {
 			timer.forceStop();
-			throw new DatabaseException(
-					"An error occurred while attempting to retrieve generated keys while updating the database: \""
-					+ update + "\"", e);
+			Messaging.debug(
+					"An error occurred while attempting to retrieve generated keys while updating the database: \"%s\" -- %s",
+					update, e);
 		}
 
 		return row;
@@ -269,13 +265,8 @@ public class MySQL extends Database {
 
 				row.populate(statement.getGeneratedKeys());
 			} catch (SQLException e) {
-				try {
-					throw new DatabaseException(
-							"An error occurred while attempting to retrieve generated keys while updating the database: \""
-									+ update + "\" -- with values: " + Arrays.toString(values), e);
-				} catch (DatabaseException e1) {
-					e1.printStackTrace();
-				}
+				Messaging.debug("An error occurred while attempting to update the database: \"%s\" -- with values: %s -- %s",
+						update, Arrays.toString(values), e);
 			}
 
 			Messaging.debug(
@@ -286,15 +277,15 @@ public class MySQL extends Database {
 			return row;
 		});
 
-		CachedRowSet row;
+		CachedRowSet row = null;
 
 		try {
 			row = future.get();
 		} catch (InterruptedException | ExecutionException e) {
 			timer.forceStop();
-			throw new DatabaseException(
-					"An error occurred while attempting to retrieve generated keys while updating the database: \""
-							+ update + "\"", e);
+			Messaging.debug(
+					"An error occurred while attempting to retrieve generated keys while updating the database: \"%s\" -- %s",
+					update, e);
 		}
 
 		return row;
