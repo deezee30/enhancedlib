@@ -126,7 +126,7 @@ public final class Data implements Cloneable {
 		if (key) string.append(" KEY");
 		if (unq) string.append(" UNIQUE");
 		if (uns) string.append(" UNSIGNED");
-		if (dft != null) string.append(" DEFAULT ").append(dft);
+		if (dft != null) string.append(" DEFAULT '").append(dft).append('\'');
 		if (xtr != null) string.append(xtr);
 
 		return string.toString();
