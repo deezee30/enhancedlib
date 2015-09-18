@@ -379,6 +379,13 @@ public final class Messaging {
 										  Object... components) {
 		if (message == null) return Optional.absent();
 
+		// Replace null components with "null" string
+		for (int x = 0; x < components.length; ++x) {
+			final Object o = components[x];
+
+			if (o == null) components[x] = "null";
+		}
+
 		try {
 			message = String.format(message, components);
 		} catch (IllegalFormatException ignored) {}
