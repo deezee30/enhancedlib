@@ -7,9 +7,6 @@
 package com.maulss.enhancedlib.text;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.io.Console;
@@ -358,40 +355,28 @@ public final class Messaging {
 		return (usePrefix ? prefix : "") + string;
 	}
 
-	public static String buildMessage(String prefix,
-									  String message,
+	public static String buildMessage(String message,
 									  Object... components) {
-		if (Strings.isNullOrEmpty(message)) return null;
+		if (message != null) {
+			// Replace null components with "null" string
+			for (int x = 0; x < components.length; ++x) {
+				final Object o = components[x];
 
-		int countMatches = StringUtils.countMatches(message, "%s");
-		while (countMatches > components.length) {
-			--countMatches;
+				if (o == null) components[x] = "null";
+			}
+
+			try {
+				message = String.format(message, components);
+			} catch (IllegalFormatException ignored) {}
 		}
 
-		if (countMatches < components.length) {
-			components = ArrayUtils.subarray(components, 0, countMatches);
-		}
-
-		return prefix(String.format(message, components), prefix);
+		return message;
 	}
 
 	private static Optional<String> write(String message,
 										  Object... components) {
-		if (message == null) return Optional.absent();
-
-		// Replace null components with "null" string
-		for (int x = 0; x < components.length; ++x) {
-			final Object o = components[x];
-
-			if (o == null) components[x] = "null";
-		}
-
-		try {
-			message = String.format(message, components);
-		} catch (IllegalFormatException ignored) {}
-
+		message = buildMessage(message, components);
 		System.out.println(message);
-
 		return Optional.of(message);
 	}
 }

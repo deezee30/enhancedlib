@@ -7,6 +7,7 @@
 package com.maulss.enhancedlib;
 
 import com.google.common.base.Optional;
+import com.maulss.enhancedlib.text.Messaging;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.Validate;
 
@@ -18,8 +19,9 @@ public class EnhancedException extends Exception {
 
 	private final Optional<URL> pasteLink = Optional.absent();
 
-	public EnhancedException(@NotNull String message) {
-		super(Validate.notNull(message));
+	public EnhancedException(@NotNull String message,
+							 @NotNull Object... components) {
+		super(Messaging.buildMessage(Validate.notNull(message), components));
 	}
 
 	public EnhancedException(@NotNull String message,
