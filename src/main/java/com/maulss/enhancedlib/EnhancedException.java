@@ -34,12 +34,12 @@ public class EnhancedException extends Exception {
 	}
 
 	public EnhancedException(@NotNull String message,
-							 @NotNull Throwable cause,
+							 Throwable cause,
 							 boolean enableSuppression,
 							 boolean writableStackTrace) {
 		super(
 				Validate.notNull(message),
-				Validate.notNull(cause),
+				cause,
 				enableSuppression,
 				writableStackTrace
 		);
