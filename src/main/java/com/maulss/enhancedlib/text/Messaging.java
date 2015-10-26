@@ -7,10 +7,11 @@
 package com.maulss.enhancedlib.text;
 
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Console;
 import java.util.IllegalFormatException;
+
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * Easy to use tool for quickly working with {@code String}s in
@@ -31,7 +32,7 @@ public final class Messaging {
 	private static boolean debug        = false;
 	private static String  prefix       = "EnhancedLib -> ";
 	private static String  debugPrefix  = "[DEBUG] ";
-	private static char    noPrefixChar = 126;
+	private static char    noPrefixChar = 126; // char "~"
 
 	/**
 	 * Logs a message to the console if it's present using
@@ -45,7 +46,8 @@ public final class Messaging {
 	 * programmer does <b>not</b> want to include the prefix before the
 	 * outputted string, they can add a defined {@link char} at the very
 	 * start, which can be set using {@link #setNoPrefixChar(char)}.
-	 *  The default {@code char} is by ID of {@code 126} ({@code ~}).</p>
+	 *  The default {@link #noPrefixChar} {@code char} is by ID of {@code 126}
+	 * ({@code ~}).</p>
 	 *
 	 * <p>{@link java.util.Formatter} codes are available to be used in the
 	 * {@param string} with components being used in {@param components}.</p>
@@ -78,6 +80,7 @@ public final class Messaging {
 		return write(prefix(string, prefix), components);
 	}
 
+
 	/**
 	 * Logs a message to the console if it's present and the provided check
 	 * is true using {@link Console#format(String , Object...)}.  If a
@@ -89,7 +92,8 @@ public final class Messaging {
 	 * programmer does <b>not</b> want to include the prefix before the
 	 * outputted string, they can add a defined {@link char} at the very
 	 * start, which can be set using {@link #setNoPrefixChar(char)}.
-	 *  The default {@code char} is by ID of {@code 126} ({@code ~}).</p>
+	 *  The default {@link #noPrefixChar} {@code char} is by ID of {@code 126}
+	 * ({@code ~}).</p>
 	 *
 	 * <p>{@link java.util.Formatter} codes are available to be used in the
 	 * {@param string} with components being used in {@param components}.</p>
@@ -125,6 +129,7 @@ public final class Messaging {
 		return check;
 	}
 
+
 	/**
 	 * <p>Debugs a message to the console if it's present and {@link
 	 * #enableDebugging(boolean)} is set to {@code true}.  This method works
@@ -142,8 +147,8 @@ public final class Messaging {
 	 * set to {@code EnhancedLib -{@literal >} }.  If for a reason the programmer
 	 * does <b>not</b> want to include the prefix before the outputted string,
 	 * they can add a defined {@link char} at the very start, which can be
-	 * set using {@link #setNoPrefixChar(char)}.  The default {@code char}
-	 * is by ID of {@code 126} ({@code ~}).</p>
+	 * set using {@link #setNoPrefixChar(char)}.  The default {@link #noPrefixChar}
+	 * {@code char} is by ID of {@code 126} ({@code ~}).</p>
 	 *
 	 * <p>{@link java.util.Formatter} codes are available to be used in the
 	 * {@param string} with components being used in {@param components}.</p>
@@ -179,6 +184,7 @@ public final class Messaging {
 		return debug ? write(msg, components) : Optional.of(msg);
 	}
 
+
 	/**
 	 * <p>Debugs a message to the console if it's present, the provided check
 	 * is true using {@link Console#format(String , Object...)} and {@link
@@ -198,8 +204,8 @@ public final class Messaging {
 	 * set to {@code EnhancedLib -{@literal >} }.  If for a reason the programmer
 	 * does <b>not</b> want to include the prefix before the outputted string,
 	 * they can add a defined {@link char} at the very start, which can be
-	 * set using {@link #setNoPrefixChar(char)}.  The default {@code char}
-	 * is by ID of {@code 126} ({@code ~}).</p>
+	 * set using {@link #setNoPrefixChar(char)}.  The default {@link #noPrefixChar}
+	 * {@code char} is by ID of {@code 126} ({@code ~}).</p>
 	 *
 	 * <p>{@link java.util.Formatter} codes are available to be used in the
 	 * {@param string} with components being used in {@param components}.</p>
@@ -237,6 +243,7 @@ public final class Messaging {
 		return check;
 	}
 
+
 	/**
 	 * @return 	Whether or not debugging is allowed, AKA value inputted for {@link
 	 * 			#enableDebugging(boolean)}.  By default the value is {@code false}.
@@ -247,6 +254,7 @@ public final class Messaging {
 	public static boolean debugEnabled() {
 		return debug;
 	}
+
 
 	/**
 	 * Turns debugging on and off.
@@ -268,6 +276,7 @@ public final class Messaging {
 		return Messaging.debug = debug;
 	}
 
+
 	/**
 	 * Sets a prefix that will be outputted before every message in the console
 	 * provided it is present.
@@ -276,7 +285,8 @@ public final class Messaging {
 	 *  If for a reason the programmer does <b>not</b> want to include the
 	 * prefix before the outputted string, they can add a defined {@link char}
 	 * at the very start, which can be set using {@link #setNoPrefixChar(char)}.
-	 *  The default {@code char} is by ID of {@code 126} ({@code ~}).</p>
+	 *  The default {@link #noPrefixChar} {@code char} is by ID of {@code 126}
+	 * ({@code ~}).</p>
 	 *
 	 * @param 	prefix
 	 * 			The string that will be placed before every outputted message.
@@ -288,6 +298,7 @@ public final class Messaging {
 		return Messaging.prefix = prefix;
 	}
 
+
 	/**
 	 * Sets a prefix that will be outputted before every <b>debugging</b>
 	 * message in the console provided it is present.
@@ -296,7 +307,8 @@ public final class Messaging {
 	 * reason the programmer does <b>not</b> want to include the prefix
 	 * before the outputted string, they can add a defined {@link char} at
 	 * the very start, which can be set using {@link #setNoPrefixChar(char)}.
-	 * The default {@code char} is by ID of {@code 126} ({@code ~}).</p>
+	 * The default {@link #noPrefixChar} {@code char} is by ID of {@code 126}
+	 * ({@code ~}).</p>
 	 *
 	 * @param 	debugPrefix
 	 * 			The string that will be placed before every outputted message.
@@ -308,14 +320,15 @@ public final class Messaging {
 		return Messaging.debugPrefix = debugPrefix;
 	}
 
+
 	/**
 	 * Sets the {@code char} that should be used before the outputting message
 	 * to indicate that the prefix should not be used.
 	 *
 	 * <p>If for a reason the programmer does <b>not</b> want to include the
 	 * prefix before the outputted string, they can add a defined {@link char}
-	 * at the very start, which can be set here.  The default {@code char} is
-	 * by ID of {@code 126} ({@code ~}).</p>
+	 * at the very start, which can be set here.  The default {@link #noPrefixChar}
+	 * {@code char} is by ID of {@code 126} ({@code ~}).</p>
 	 *
 	 * @param 	noPrefixChar
 	 * 			{@code char} that should be used before the outputting message
@@ -329,6 +342,7 @@ public final class Messaging {
 		return Messaging.noPrefixChar = noPrefixChar;
 	}
 
+
 	/**
 	 * @return 	{@code char} that should be used before the outputting message
 	 * 			to indicate that the prefix should not be used.
@@ -341,10 +355,11 @@ public final class Messaging {
 		return noPrefixChar;
 	}
 
+
 	public static String prefix(String string,
 								String prefix) {
 		if (string == null) return null;
-		Validate.notNull(prefix);
+		notNull(prefix);
 
 		boolean usePrefix = true;
 		if (string.startsWith(String.valueOf(noPrefixChar))) {
@@ -354,6 +369,7 @@ public final class Messaging {
 
 		return (usePrefix ? prefix : "") + string;
 	}
+
 
 	public static String buildMessage(String message,
 									  Object... components) {
@@ -372,6 +388,7 @@ public final class Messaging {
 
 		return message;
 	}
+
 
 	private static Optional<String> write(String message,
 										  Object... components) {

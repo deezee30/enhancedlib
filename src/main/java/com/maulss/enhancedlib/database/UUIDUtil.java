@@ -111,7 +111,7 @@ public final class UUIDUtil {
 
 	/**
 	 * Checks whether {@param obj} is fit for properties of a {@link java.util.UUID}.
-	 * If so, parses UUID to a String removing all dashes to make a 32-length String.
+	 * If so, parses UUID to a String adding all dashes to make a 36-length String.
 	 *
 	 * @param   obj The object to check for
 	 *
@@ -122,11 +122,11 @@ public final class UUIDUtil {
 	@NotNull
 	public static synchronized String checkForValidUuid(Object obj) {
 		String str = String.valueOf(obj);
-		return isUuid(str) ? fromUuid(str) : str;
+		return isUuid(str) ? str.length() == 32 ? fromString(str).toString() : str : str;
 	}
 
 	/**
-	 * Used as a global identifier for storing 32-length UUID-related objects without dashes.
+	 * Used as a global identifier for storing 36-length UUID-related objects with dashes.
 	 *
 	 * <table summary="">
 	 *     <tr>
@@ -141,7 +141,7 @@ public final class UUIDUtil {
 	 *     </tr>
 	 * </table>
 	 *
-	 * @return The global identifier used for storing 32-length UUID-related objects without dashes
+	 * @return The global identifier used for storing 36-length UUID-related objects with dashes
 	 */
 	@NotNull
 	public static synchronized StatType getUserIdentifier() {
@@ -159,10 +159,7 @@ public final class UUIDUtil {
 			@Override
 			@NotNull
 			public Data getData() {
-				// Since all UUID-related values sent to the database will automatically have
-				// its dashes removed, we can safely give the column type's (VARCHAR) length
-				// a maximum of 32 characters to save space as that's all that will be needed.
-				return new Data(COLUMN, DataType.VARCHAR.setAttributes(32)).key().notNull().unique();
+				return new Data(COLUMN, DataType.VARCHAR.setAttributes(36)).key().notNull().unique();
 			}
 
 			@Override

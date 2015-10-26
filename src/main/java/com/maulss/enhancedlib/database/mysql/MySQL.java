@@ -74,7 +74,7 @@ public class MySQL extends Database {
 			// small asynchronous tasks as they will be reused.
 			executor = ServiceExecutor.newAsyncExecutor("MySQL Pool");
 
-			Messaging.debug("Using MySQL URL: '" + url() + "'");
+			Messaging.log("Using MySQL URL: '" + url() + "'");
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new DatabaseException("An error occurred while attempting to establish a database connection", e);
 		}

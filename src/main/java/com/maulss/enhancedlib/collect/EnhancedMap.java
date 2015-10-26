@@ -124,7 +124,8 @@ public class EnhancedMap<K, V> extends LinkedHashMap<K, V> implements JSONAware 
 	 */
 	public static Map<String, Object> fromJson(@NotNull String json) {
 		Validate.notNull(json);
-		return new Gson().fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+		return new Gson().fromJson(json, new TypeToken<Map<String, Object>>() {
+		}.getType());
 	}
 
 	@Override

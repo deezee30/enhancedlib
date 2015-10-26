@@ -53,10 +53,8 @@ public interface StatType extends Serializable, Cloneable {
 	static List<Object> getFromRow(ResultSet result, StatType... columns) {
 		List<Object> objs = Lists.newArrayList();
 		try {
-			if (result.next()) {
-				for (StatType st : columns) {
-					objs.add(result.getObject(st.getColumn()));
-				}
+			for (StatType st : columns) {
+				objs.add(result.getObject(st.getColumn()));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
