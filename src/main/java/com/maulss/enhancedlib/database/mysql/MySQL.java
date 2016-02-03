@@ -44,37 +44,20 @@ public class MySQL extends Database {
 		ping();
 	}
 
-	private String url() {
-		Credentials c = properties.getCredentials();
-
-		return String.format(
-				"jdbc:mysql://%s:%s/%s%s",
-				c.getHost(),
-				c.getPort(),
-				c.getName(),
-				properties.toString()
-		);
-	}
-
 	@Override
 	@Nullable
 	protected Connection open() throws DatabaseException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 
-			connection = DriverManager.getConnection(
-					url(),
-					properties.getCredentials().getUser(),
-					properties.getCredentials().getPass()
-			);
+			final Credentials c = properties.getCredentials();
+			connection = DriverManager.getConnection(c.getUrl(), c.getUser(), c.getPass());
 
 			// Create such a thread pool that creates new threads as needed, but
 			// will reuse previously constructed threads when they are available.
 			// This thread pool will drastically increase performance for these
 			// small asynchronous tasks as they will be reused.
 			executor = ServiceExecutor.newAsyncExecutor("MySQL Pool");
-
-			Messaging.log("Using MySQL URL: '" + url() + "'");
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new DatabaseException("An error occurred while attempting to establish a database connection", e);
 		}
@@ -133,10 +116,7 @@ public class MySQL extends Database {
 			CachedRowSet row = new CachedRowSetImpl();
 			row.populate(result);
 
-			Messaging.debug(
-					"Ordinary query completed and returned in %sms",
-					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-			);
+			timer.forceStop();
 
 			return row;
 		});
@@ -176,10 +156,7 @@ public class MySQL extends Database {
 			result.close();
 			statement.close();
 
-			Messaging.debug(
-					"Advanced query completed and returned in %sms",
-					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-			);
+			timer.forceStop();
 
 			return row;
 		});
@@ -221,10 +198,7 @@ public class MySQL extends Database {
 						update, e);
 			}
 
-			Messaging.debug(
-					"Ordinary update completed in %sms",
-					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-			);
+			timer.forceStop();
 
 			return row;
 		});
@@ -267,12 +241,9 @@ public class MySQL extends Database {
 			} catch (SQLException e) {
 				Messaging.debug("An error occurred while attempting to update the database: \"%s\" -- with values: %s -- %s",
 						update, Arrays.toString(values), e);
+			} finally {
+				timer.forceStop();
 			}
-
-			Messaging.debug(
-					"Advanced update completed in %sms",
-					timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-			);
 
 			return row;
 		});

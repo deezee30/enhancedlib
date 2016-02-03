@@ -9,7 +9,11 @@ package com.maulss.enhancedlib.text;
 import com.google.common.base.Optional;
 
 import java.io.Console;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IllegalFormatException;
+import java.util.Map;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -29,10 +33,11 @@ public final class Messaging {
 	 */
 	public static final String BORDER = "---------------------------------------";
 
-	private static boolean debug        = false;
-	private static String  prefix       = "EnhancedLib -> ";
-	private static String  debugPrefix  = "[DEBUG] ";
-	private static char    noPrefixChar = 126; // char "~"
+	private static boolean		debug			= false;
+	private static String		prefix			= "EnhancedLib -> ";
+	private static String		debugPrefix		= "[DEBUG] ";
+	private static char			noPrefixChar	= 126; // char "~"
+	private static PrintStream	output			= System.out;
 
 	/**
 	 * Logs a message to the console if it's present using
@@ -77,7 +82,7 @@ public final class Messaging {
 	 */
 	public static Optional<String> log(String string,
 									   Object... components) {
-		return write(prefix(string, prefix), components);
+		return write(output, prefix(string, prefix), components);
 	}
 
 
@@ -181,7 +186,7 @@ public final class Messaging {
 	public static Optional<String> debug(String string,
 										 Object... components) {
 		String msg = prefix(string, debugPrefix + prefix);
-		return debug ? write(msg, components) : Optional.of(msg);
+		return debug ? write(System.out, msg, components) : Optional.of(msg);
 	}
 
 
@@ -371,6 +376,16 @@ public final class Messaging {
 	}
 
 
+	public static PrintStream getOutput() {
+		return output;
+	}
+
+
+	public static PrintStream setOutput(PrintStream output) {
+		return Messaging.output = output;
+	}
+
+
 	public static String buildMessage(String message,
 									  Object... components) {
 		if (message != null) {
@@ -390,10 +405,47 @@ public final class Messaging {
 	}
 
 
-	private static Optional<String> write(String message,
+	public static String constructReplacements(String string,
+											   String[] keys,
+											   Object... vals) {
+		final int keysLen = keys.length;
+		final int valsLen = vals.length;
+		final int min = Math.min(keysLen, valsLen);
+
+		// Remove nulls from arrays
+		keys = Arrays.copyOf(keys, keysLen);
+		vals = Arrays.copyOf(vals, valsLen);
+
+		Map<String, Object> replacements = new HashMap<>(min);
+
+		for (int x = 0; x < min; ++x) {
+			replacements.put(keys[x], vals[x]);
+		}
+
+		return constructReplacements(string, replacements);
+	}
+
+
+	public static String constructReplacements(String string,
+											   Map<String, Object> replacements) {
+		for (Map.Entry<String, Object> entry : replacements.entrySet()) {
+			final String key = entry.getKey();
+			final Object val = entry.getValue();
+
+			if (key != null && val != null) {
+				string = string.replace(key, val.toString());
+			}
+		}
+
+		return string;
+	}
+
+
+	private static Optional<String> write(PrintStream output,
+										  String message,
 										  Object... components) {
 		message = buildMessage(message, components);
-		System.out.println(message);
+		output.println(message);
 		return Optional.of(message);
 	}
 }

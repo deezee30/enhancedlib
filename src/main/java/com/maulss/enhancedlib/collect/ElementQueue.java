@@ -35,6 +35,8 @@ public class ElementQueue<E> extends EnhancedList<E> {
 	}
 
 	public void rotate(int distance) {
+		if (distance >= size()) return;
+
 		E first = get(0);
 		Collections.rotate(this, distance);
 		onRotate.onRotate(first);

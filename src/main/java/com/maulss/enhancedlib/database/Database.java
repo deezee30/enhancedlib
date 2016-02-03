@@ -14,6 +14,7 @@ import org.apache.commons.lang3.Validate;
 
 import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
@@ -53,11 +54,15 @@ public abstract class Database {
 	public final Database ping() throws DatabaseException {
 		if (!isOpen()) {
 			Timer timer = new Timer().start();
-			open();
-			Messaging.log(
-				"Successfully established a connection with the database server in %sms",
-				timer.forceStop().getTime(TimeUnit.MILLISECONDS)
-			);
+			try {
+				Messaging.debug(
+						"Successfully established a new connection with the database server URL `%s` in %sms",
+						open().getMetaData().getURL(),
+						timer.forceStop().getTime(TimeUnit.MILLISECONDS)
+				);
+			} catch (SQLException e) {
+				throw new DatabaseException(e);
+			}
 		}
 
 		return this;

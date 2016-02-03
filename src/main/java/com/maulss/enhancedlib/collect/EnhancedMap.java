@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 
 public class EnhancedMap<K, V> extends LinkedHashMap<K, V> implements JSONAware {
 
@@ -44,10 +45,18 @@ public class EnhancedMap<K, V> extends LinkedHashMap<K, V> implements JSONAware 
 		this((JSONObject) JSONValue.parse(jsonString));
 	}
 
+	public final boolean putIf(BiPredicate<K, V> check, K key, V value) {
+		return putIf(check.test(key, value), key, value);
+	}
+
 	public final boolean putIf(boolean check, K key, V value) {
 		if (!check) return false;
 		put(key, value);
 		return true;
+	}
+
+	public final boolean removeIf(BiPredicate<K, V> check, K key, V value) {
+		return removeIf(check.test(key, value), key);
 	}
 
 	public final boolean removeIf(boolean check, K key) {

@@ -33,11 +33,11 @@ public final class ServiceExecutor {
 	}
 
 	public static ListeningExecutorService newAsyncExecutor() {
-		return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+		return MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(1));
 	}
 
 	public static ListeningExecutorService newAsyncExecutor(ThreadFactory tf) {
-		return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool(tf));
+		return MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(1, tf));
 	}
 
 	public static ListeningExecutorService newAsyncExecutor(String name) {

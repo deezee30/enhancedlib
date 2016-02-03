@@ -14,6 +14,7 @@ import org.json.simple.JSONAware;
 import org.json.simple.JSONValue;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class EnhancedList<E> extends ArrayList<E> implements JSONAware {
 
@@ -38,8 +39,16 @@ public class EnhancedList<E> extends ArrayList<E> implements JSONAware {
 		this((JSONArray) JSONValue.parse(jsonString));
 	}
 
+	public final boolean addIf(Predicate<E> check, E element) {
+		return addIf(check.test(element), element);
+	}
+
 	public final boolean addIf(boolean check, E element) {
 		return check && add(element);
+	}
+
+	public final boolean removeIf(Predicate<E> check, E element) {
+		return removeIf(check.test(element), element);
 	}
 
 	public final boolean removeIf(boolean check, E element) {

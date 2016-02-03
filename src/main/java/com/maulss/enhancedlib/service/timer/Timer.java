@@ -23,16 +23,10 @@ public final class Timer implements Runnable, Serializable {
 
 	@Override
 	public void run() {
-		if (running) {
-			try {
-				throw new Exception("Timer is already running");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if (!running) {
+			running = true;
+			startNanos = System.nanoTime();
 		}
-
-		running = true;
-		startNanos = System.nanoTime();
 	}
 
 	public Timer start() {
@@ -41,15 +35,10 @@ public final class Timer implements Runnable, Serializable {
 	}
 
 	public Timer forceStop() {
-		if (!running) {
-			try {
-				throw new Exception("Timer is not running");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if (running) {
+			finish();
 		}
 
-		finish();
 		return this;
 	}
 

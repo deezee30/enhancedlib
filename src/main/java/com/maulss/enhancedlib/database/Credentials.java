@@ -17,19 +17,16 @@ import java.util.Map;
  */
 public final class Credentials {
 
-	private final String host;
-	private final int    port;
+	private final String url;
 	private final String name;
 	private final String user;
 	private final String pass;
 
-	public Credentials(@NotNull String host,
-					   int port,
+	public Credentials(@NotNull String url,
 					   @NotNull String name,
 					   @NotNull String user,
 					   @NotNull String pass) {
-		this.host = Validate.notNull(host);
-		this.port = port;
+		this.url  = Validate.notNull(url);
 		this.name = Validate.notNull(name);
 		this.user = Validate.notNull(user);
 		this.pass = Validate.notNull(pass);
@@ -37,8 +34,7 @@ public final class Credentials {
 
 	public Credentials(@NotNull Map<String, Object> data) {
 		this(
-				(String) data.get("host"),
-				(int)    data.get("port"),
+				(String) data.get("url"),
 				(String) data.get("database"),
 				(String) data.get("username"),
 				(String) data.get("password")
@@ -46,19 +42,12 @@ public final class Credentials {
 	}
 
 	/**
-	 * @return The hostname of the {@link com.maulss.enhancedlib.database.Database} server.
+	 * @return	The URL including the hostname and port (and perhaps properties) of the
+	 * 			{@link com.maulss.enhancedlib.database.Database} server.
 	 */
 	@NotNull
-	public synchronized String getHost() {
-		return host;
-	}
-
-	/**
-	 * @return The port of the {@link com.maulss.enhancedlib.database.Database} server.
-	 */
-	@NotNull
-	public synchronized int getPort() {
-		return port;
+	public synchronized String getUrl() {
+		return url;
 	}
 
 	/**
@@ -88,11 +77,10 @@ public final class Credentials {
 	@NotNull
 	public Map<String, Object> serialize() {
 		return new ImmutableMap.Builder<String, Object>()
-				.put("host", host)
-				.put("port", port)
-				.put("database", name)
-				.put("username", user)
-				.put("password", pass)
+				.put("url",			url)
+				.put("database",	name)
+				.put("username",	user)
+				.put("password",	pass)
 				.build();
 	}
 }
